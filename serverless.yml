@@ -1,0 +1,11 @@
+service: async-url-processor
+
+provider:
+  name: aws
+  runtime: python3.7
+
+
+functions:
+  hello:
+    handler: handler.hello
+
