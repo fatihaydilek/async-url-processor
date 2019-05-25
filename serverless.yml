@@ -4,8 +4,20 @@ provider:
   name: aws
   runtime: python3.7
 
+plugins:
+  - serverless-python-requirements
 
 functions:
-  hello:
-    handler: handler.hello
+  get_url:
+    handler: get_url.handler
+    name: get_url
+    events:
+      - http:
+          path: api/url
+          method: get
+          cors: true
 
+
+package:
+  exclude:
+    - venv/** # virtualenv
