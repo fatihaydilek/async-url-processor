@@ -50,9 +50,12 @@ plugins:
   - serverless-python-requirements
 
 functions:
-  get_url:
-    handler: get_url.handler
-    name: get_url
+  url_worker:
+    handler: url_worker.handler
+    name: url_worker
+  get_url_request:
+    handler: get_url_request.handler
+    name: get_url_request
     events:
       - http:
           path: api/url
