@@ -3,20 +3,10 @@ import requests
 import logging
 import validators
 import bs4
-import boto3
 import os
 from datetime import datetime
-
-
-def upload_file_to_s3(bucket_name, path, file):
-    try:
-        s3 = boto3.resource('s3')
-        object = s3.Object(bucket_name, path)
-        object.put(Body=file)
-    except Exception as e:
-        logging.error("Failed uploading file. Continuing. {}".format(e))
-    else:
-        logging.info("upload file successful")
+from s3_utility import upload_file_to_s3
+from dynamo_utility import insert_item
 
 
 def get_domain_from_url(url):
@@ -47,9 +37,12 @@ def handler(event, context):
         if response:
             logging.info('page fetch success!')
             title = bs4.BeautifulSoup(response.text, "html.parser").title.text
+            # upload content to s3
             upload_file_to_s3(os.environ['WebPageContentsBucket'],
                               build_s3_path(url),
                               response.content)
+            # insert title to dynamoDb
+            insert_item(os.environ['DynamoTableName'],title)
         else:
             logging.error('page fetch failed!')
             return {'statusCode': 500,
