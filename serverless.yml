@@ -3,6 +3,38 @@ service: async-url-processor
 provider:
   name: aws
   runtime: python3.7
+  memorySize: 512
+  timeout: 10
+  environment:
+    WebPageContentsBucket: !Ref WebPageBucket
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - lambda:*
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - "s3:ListBucket"
+      Resource:
+        Fn::Join:
+          - ""
+          - - "arn:aws:s3:::"
+            - Ref: WebPageBucket
+    - Effect: "Allow"
+      Action:
+        - "s3:PutObject"
+      Resource:
+        Fn::Join:
+          - ""
+          - - "arn:aws:s3:::"
+            - Ref: WebPageBucket
+            - "/*"
+    - Effect: "Allow"
+      Action:
+        - "logs:CreateLogGroup"
+        - "logs:CreateLogStream"
+        - "logs:PutLogEvents"
+      Resource: "*"
 
 plugins:
   - serverless-python-requirements
@@ -18,6 +50,43 @@ functions:
           cors: true
 
 
+
+
+
+resources:
+  Resources:
+    WebPageBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: webpagecontents
+        CorsConfiguration:
+          CorsRules:
+            -
+              AllowedOrigins:
+                - '*'
+              AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - GET
+                - PUT
+                - POST
+                - DELETE
+                - HEAD
+              MaxAge: 3000
+
+# Print out the name of the bucket that is created
+Outputs:
+  WebPageBucket:
+    Value:
+      Ref: WebPageBucket
+
+
 package:
   exclude:
     - venv/** # virtualenv
+    - node_modules/**
+    - .idea/**
+    - README.md
+    - package.json
+    - package-lock.json
+    - requirements.txt
