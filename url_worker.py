@@ -6,7 +6,7 @@ import bs4
 import os
 from datetime import datetime
 from s3_utility import upload_file_to_s3
-from dynamo_utility import insert_item
+from dynamo_utility import get_item, update_item
 
 
 def get_domain_from_url(url):
@@ -20,14 +20,13 @@ def build_s3_path(url):
 
 def handler(event, context):
     try:
-        # check queryParams
-        if 'url' not in event['queryStringParameters']:
-            logging.error('Bad query param')
-            return {'statusCode': 400,
-                    'body': json.dumps({'error_message': 'url not provided'})}
+        if 'identifier' in event:
+            identifier = event['identifier']
+            print("url", get_item(os.environ['DynamoTableName'], identifier))
+            url_item = get_item(os.environ['DynamoTableName'], identifier)
+            url = url_item['url']
 
         # check url validity
-        url = event['queryStringParameters']['url']
         if not validators.url(url):
             logging.error('Invalid Url')
             return {'statusCode': 400,
@@ -41,8 +40,12 @@ def handler(event, context):
             upload_file_to_s3(os.environ['WebPageContentsBucket'],
                               build_s3_path(url),
                               response.content)
-            # insert title to dynamoDb
-            insert_item(os.environ['DynamoTableName'],title)
+            # update url item
+            update_item(os.environ['DynamoTableName'], {
+                'id': identifier,
+                'state': '“PROCESSED”',
+                's3Url': "https://s3.amazonaws.com/" + os.environ['WebPageContentsBucket'] + "/" + build_s3_path(url)
+            })
         else:
             logging.error('page fetch failed!')
             return {'statusCode': 500,
@@ -58,7 +61,7 @@ def handler(event, context):
         "message": "title fetch successful",
         "title": json.dumps({
             "title": title,
-            "objectUrl": "https://s3.amazonaws.com/" + build_s3_path(url)
+            "objectUrl": "https://s3.amazonaws.com/" + os.environ['WebPageContentsBucket'] + "/" + build_s3_path(url)
         })
     }
 

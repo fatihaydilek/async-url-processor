@@ -8,6 +8,7 @@ provider:
   environment:
     WebPageContentsBucket: !Ref WebPageBucket
     DynamoTableName: !Ref UrlDynamoDbTable
+    UrlWorker: "url_worker"
   iamRoleStatements:
     - Effect: Allow
       Action:

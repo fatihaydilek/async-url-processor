@@ -3,6 +3,7 @@ import logging
 import uuid
 import validators
 import os
+import boto3
 from dynamo_utility import insert_item
 
 
@@ -29,6 +30,17 @@ def handler(event, context):
             'state': 'PENDING'
         }
         insert_item(os.environ['DynamoTableName'], item)
+
+        client = boto3.client('lambda')
+        resp = client.invoke(
+            FunctionName=os.environ['UrlWorker'],
+            InvocationType='Event',
+            LogType='None',
+            Payload=json.dumps({
+                'identifier': identifier
+            })
+        )
+
     except Exception as e:
         logging.error("Error while getting url request. {}".format(e))
         return {'statusCode': 500,
