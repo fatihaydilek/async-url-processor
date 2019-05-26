@@ -4,7 +4,7 @@ import uuid
 import validators
 import os
 import boto3
-from dynamo_utility import insert_item
+from utility.dynamo_utility import insert_item
 
 
 def handler(event, context):

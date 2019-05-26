@@ -5,8 +5,8 @@ import validators
 import bs4
 import os
 from datetime import datetime
-from s3_utility import upload_file_to_s3
-from dynamo_utility import get_item, update_item
+from utility.s3_utility import upload_file_to_s3
+from utility.dynamo_utility import get_item, update_item
 
 
 def get_domain_from_url(url):
@@ -22,7 +22,6 @@ def handler(event, context):
     try:
         if 'identifier' in event:
             identifier = event['identifier']
-            print("url", get_item(os.environ['DynamoTableName'], identifier))
             url_item = get_item(os.environ['DynamoTableName'], identifier)
             url = url_item['url']
 

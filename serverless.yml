@@ -52,16 +52,24 @@ plugins:
 
 functions:
   url_worker:
-    handler: url_worker.handler
+    handler: services/url_worker.handler
     name: url_worker
   get_url_request:
-    handler: get_url_request.handler
+    handler: services/get_url_request.handler
     name: get_url_request
     events:
       - http:
           path: api/url
           method: get
           cors: true
+  get_url:
+      handler: url/get.handler
+      name: get_url
+      events:
+        - http:
+            path: url
+            method: get
+            cors: true
 
 
 

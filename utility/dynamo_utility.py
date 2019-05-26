@@ -1,8 +1,9 @@
 import logging
 import boto3
-import json
+
 
 dynamodb = boto3.resource('dynamodb')
+
 
 def insert_item(table_name, item):
     try:
