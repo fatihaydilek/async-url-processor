@@ -45,6 +45,9 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
+        - dynamodb:GetShardIterator
+        - dynamodb:DescribeStream
+        - dynamodb:ListStreams
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/UrlTable"
 
 plugins:
@@ -54,6 +57,11 @@ functions:
   url_worker:
     handler: services/url_worker.handler
     name: url_worker
+    events:
+      - stream:
+          type: dynamodb
+          arn: { Fn::GetAtt: [ UrlDynamoDbTable, StreamArn ] }
+          batchSize: 1
   get_url_request:
     handler: services/get_url_request.handler
     name: get_url_request
@@ -109,6 +117,8 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: UrlTable
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
 
 # Print out the name of the bucket that is created
 Outputs:
