@@ -39,10 +39,11 @@ def update_item(table_name, item):
         Key={
             'id': item['id']
         },
-        UpdateExpression="set #st = :s, s3Url =:s3",
+        UpdateExpression="set #st = :s, s3Url =:s3, title =:t",
         ExpressionAttributeValues={
             ':s': item['state'],
             ':s3': item['s3Url'],
+            ':t': item['title']
         },
         ReturnValues='UPDATED_NEW',
         ExpressionAttributeNames={
