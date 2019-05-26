@@ -50,7 +50,7 @@ def handler(event, context):
                 # update url item
                 update_item(os.environ['DynamoTableName'], {
                     'id': url_item['id'],
-                    'state': '“PROCESSED”',
+                    'state': 'PROCESSED',
                     'title': title,
                     's3Url': "https://s3.amazonaws.com/" + os.environ['WebPageContentsBucket'] + "/" + build_s3_path(
                         url)
