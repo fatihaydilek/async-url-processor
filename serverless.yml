@@ -85,7 +85,8 @@ resources:
       Type: AWS::S3::Bucket
       DeletionPolicy: Delete
       Properties:
-        BucketName: ${file(config.json):bucketName}
+#        BucketName: ${file(config.json):bucketName}
+        BucketName: webpagecontents
         CorsConfiguration:
           CorsRules:
             -
