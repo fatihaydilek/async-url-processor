@@ -79,16 +79,13 @@ functions:
             method: get
             cors: true
 
-
-
-
-
 resources:
   Resources:
     WebPageBucket:
       Type: AWS::S3::Bucket
+      DeletionPolicy: Delete
       Properties:
-        BucketName: webpagecontents
+        BucketName: ${file(config.json):bucketName}
         CorsConfiguration:
           CorsRules:
             -
@@ -105,7 +102,7 @@ resources:
               MaxAge: 3000
     UrlDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
+      DeletionPolicy: Delete
       Properties:
         AttributeDefinitions:
           - AttributeName: id
