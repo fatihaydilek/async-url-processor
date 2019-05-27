@@ -9,7 +9,7 @@ from utility.dynamo_utility import insert_item
 def handler(event, context):
     try:
         # check queryParams
-        if 'url' not in event['queryStringParameters']:
+        if 'queryStringParameters' not in event or 'url' not in event['queryStringParameters']:
             logging.error('Bad query param')
             return {'statusCode': 400,
                     'body': json.dumps({'error_message': 'url not provided'})}
