@@ -1,6 +1,6 @@
 # Distribution / packaging
 .Python
-env/
+venv/
 build/
 develop-eggs/
 dist/
@@ -15,9 +15,11 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
-
+.idea/
 # Serverless directories
 .serverless
 
 #node
 node_modules
+
+package-lock.json
