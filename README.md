@@ -1,5 +1,7 @@
 ## async-url-processor
 
+Async url processor example using dynamodb streams.
+
 #### Prerequisites
 
 * Install npm/Node js
